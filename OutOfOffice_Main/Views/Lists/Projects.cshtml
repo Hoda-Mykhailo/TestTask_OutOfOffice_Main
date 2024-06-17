@@ -1,0 +1,94 @@
+﻿@using OutOfOffice_Main.Models.Entities
+@model List<Project>
+
+@{
+    ViewData["Title"] = "Projects";
+}
+
+<div>
+    <div class="row">
+        <div class="col-md-9">
+            <h1>Projects:</h1>
+        </div>
+        @if (User.IsInRole("ProjectManager"))
+        {
+            <div class="col-md-3 d-flex justify-content-center align-items-center">
+                <a class="btn btn-success" asp-area="" asp-controller="Lists" asp-action="AddProject">Add Project</a>
+            </div>
+        }
+       
+    </div>
+    @if (Model.Count < 1)
+    {
+        <h3>List empty</h3>
+    }
+    else
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">
+                        @Html.ActionLink("Id", "Projects", new { sortBy = string.Empty }, new { @class = "sort-link" })
+                    </th>
+                    <th scope="col">
+                        @Html.ActionLink("Type", "Projects", new { sortBy = "Type" }, new { @class = "sort-link" })
+                    </th>
+                    <th scope="col">
+                        @Html.ActionLink("Start date", "Projects", new { sortBy = "StartDate" }, new { @class = "sort-link" })
+                    </th>
+                    <th scope="col">
+                        @Html.ActionLink("End date", "Projects", new { sortBy = "EndDate" }, new { @class = "sort-link" })
+                    </th>
+                    <th scope="col">
+                        @Html.ActionLink("Project manager", "Projects", new { sortBy = "ProjectManager" }, new { @class = "sort-link" })
+                    </th>
+                    <th scope="col">
+                        @Html.ActionLink("Status", "Projects", new { sortBy = "Status" }, new { @class = "sort-link" })
+                    </th>
+                    @if (User.IsInRole("HRManager") )
+                    {
+                        <th scope="col">
+
+                        </th>
+                        
+                    }
+                    @if(User.IsInRole("ProjectManager"))
+                    {
+                        <th scope="col">
+
+                        </th>
+                        <th scope="col">
+
+                        </th>
+                    }
+                    
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var project in Model)
+                {
+                    <tr>
+                        <th scope="row">@project.Id</th>
+                        <td>@project.Type.ToString()</td>
+                        <td>@project.StartDate.ToString("yyyy-MM-dd")</td>
+                        <td>@(project.EndDate?.ToString("yyyy-MM-dd")?? "-")</td>
+                        <td>@project.ProjectManager.FullName</td>
+                        <td>@project.Status.ToString()</td>
+                        @if (User.IsInRole("HRManager") || User.IsInRole("ProjectManager"))
+                        {
+                            <td>
+                                <a class="btn btn-primary" asp-controller="Lists" asp-action="ProjectDetails" asp-route-id="@project.Id">Details</a>
+                            </td>
+                        }
+                        @if (User.IsInRole("ProjectManager"))
+                        {
+                            <td>
+                                <a class="btn btn-primary" asp-controller="Lists" asp-action="EditProject" asp-route-id="@project.Id">Edit</a>
+                            </td>
+                        }
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>

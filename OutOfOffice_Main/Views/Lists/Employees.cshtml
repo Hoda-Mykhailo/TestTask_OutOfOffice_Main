@@ -1,0 +1,82 @@
+﻿@using OutOfOffice_Main.Models.Entities
+@model List<Employee>
+
+@{
+    ViewData["Title"] = "Employee";
+}
+
+<div>
+    <div class="row">
+        <div class="col-md-9">
+            <h1>Employees:</h1>
+        </div>
+        <div class="col-md-3 d-flex justify-content-center align-items-center">
+            <a class="btn btn-success" asp-area="" asp-controller="Lists" asp-action="AddEmployee">Add Employee</a>
+        </div>
+    </div>
+    
+    
+    @if (Model.Count<1)
+    {
+        <h3>List empty</h3>
+    }
+    else
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">
+                        @Html.ActionLink("Id", "Employees", new { sortBy = string.Empty }, new { @class = "sort-link" })
+                    </th>
+                    <th scope="col">
+                        @Html.ActionLink("Full name", "Employees", new { sortBy = "FullName" }, new { @class = "sort-link" })
+                    </th>
+                    <th scope="col">
+                        @Html.ActionLink("Subdivision", "Employees", new { sortBy = "Subdivision" }, new { @class = "sort-link" })
+                    </th>
+                    <th scope="col">
+                        @Html.ActionLink("Position", "Employees", new { sortBy = "Position" }, new { @class = "sort-link" })
+                    </th>
+                    <th scope="col">
+                        @Html.ActionLink("Status", "Employees", new { sortBy = "Status" }, new { @class = "sort-link" })
+                    </th>
+                    <th scope="col">
+                        @Html.ActionLink("Partner", "Employees", new { sortBy = "Partner" }, new { @class = "sort-link" })
+                    </th>
+                    <th scope="col">
+                        @Html.ActionLink("Out Of Office Balance", "Employees", new { sortBy = "OutOfOfficeBalance" }, new { @class = "sort-link" })
+                    </th>
+                    <th scope="col">
+                        
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var employee in Model)
+                {
+                    <tr>
+                        <th scope="row">@employee.Id</th>
+                        <td>@employee.FullName</td>
+                        <td>@employee.Subdivision.ToString()</td>
+                        <td>@employee.Position.ToString()</td>
+                        <td>@employee.Status.ToString()</td>
+                        <td>@(employee.PeoplePartner?.FullName ?? "No Partner")</td>
+                        <td>@employee.OutOfOfficeBalance</td>
+                        <td>
+                            <a class="btn btn-primary" asp-controller="Lists" asp-action="EditEmployee" asp-route-id="@employee.Id">
+                                @if (User.IsInRole("HRManager"))
+                                {
+                                    <text>Edit</text>
+                                }
+                                else
+                                {
+                                    <text>Details</text>
+                                }
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>

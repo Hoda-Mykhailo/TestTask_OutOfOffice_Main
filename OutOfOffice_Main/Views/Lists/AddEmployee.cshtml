@@ -1,0 +1,56 @@
+﻿@using OutOfOffice_Main.Enums
+@using OutOfOffice_Main.Models
+@model AddEditEmployeeViewModel
+
+@{
+    ViewData["Title"] = "Add employee";
+}
+
+<div>
+    <h1>Add employee:</h1>
+
+    <form method="post" enctype="multipart/form-data">
+        <div class="mt-3">
+            <label class="form-label">Full name*</label>
+            <input type="text" class="form-control" asp-for="FullName" minlength="5" maxlength="60" required placeholder="input full name"/>
+        </div>
+        <div class="mt-3">
+            <label class="form-label">Subdivision*</label>
+            <select class="form-control" asp-for="Subdivision" asp-items="Html.GetEnumSelectList<Department>()" required>
+            </select>
+        </div>
+        <div class="mt-3">
+            <label class="form-label">Position*</label>
+            <select class="form-control" asp-for="Position" asp-items="Html.GetEnumSelectList<Position>()" required>
+            </select>
+        </div>
+        <div class="mt-3">
+            <label class="form-label">Status*</label>
+            <select class="form-control" asp-for="Status" asp-items="Html.GetEnumSelectList<Status>()" required>
+            </select>
+        </div>
+        <div class="mt-3">
+            <label class="form-label">PeoplePartnerId</label>
+            <select class="form-control" asp-for="PeoplePartnerId">
+                <option selected="selected" value="">Select or not</option>
+                @foreach (var partner in Model.Partners)
+                {
+                    <option value="@partner.Id">@partner.FullName|@partner.Position</option>
+                }
+            </select>
+        </div>
+        <div class="mt-3">
+            <label class="form-label">OutOfOfficeBalance*</label>
+            <input type="number" class="form-control" asp-for="OutOfOfficeBalance" min="0" max="100000" required/>
+        </div>
+
+        <div class="mt-3">
+            <label class="form-label">Photo</label>
+            <input type="file" class="form-control" asp-for="Photo"/>
+        </div>
+
+        <div class="mt-3 text-center">
+            <button type="submit" class="btn btn-primary w-25">Add</button>
+        </div>
+    </form>
+</div>

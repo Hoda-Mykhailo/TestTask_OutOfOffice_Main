@@ -1,0 +1,114 @@
+﻿@using OutOfOffice_Main.Enums
+@using OutOfOffice_Main.Models.Entities
+@model List<LeaveRequest>
+
+@{
+    ViewData["Title"] = "Leave Requests";
+}
+
+<div>
+    
+    <div class="row">
+        <div class="col-md-9">
+            <h1>Leave Requests:</h1>
+        </div>
+        @if (!User.IsInRole("HRManager") && !User.IsInRole("ProjectManager"))
+        {
+            <div class="col-md-3 d-flex justify-content-center align-items-center">
+                <a class="btn btn-success" asp-controller="Lists" asp-action="AddEditLeaveRequest">Add leave request</a>
+            </div>
+        }
+    </div>
+
+
+    @if (Model.Count < 1)
+    {
+        <h3>List empty</h3>
+    }
+    else
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">
+                        @Html.ActionLink("Id", "LeaveRequests", new { sortBy = string.Empty }, new { @class = "sort-link" })
+                    </th>
+                    <th scope="col">
+                        @Html.ActionLink("Employee full name", "LeaveRequests", new { sortBy = "EmployeeFullName" }, new { @class = "sort-link" })
+                    </th>
+                    <th scope="col">
+                        @Html.ActionLink("Absence reason", "LeaveRequests", new { sortBy = "AbsenceReason" }, new { @class = "sort-link" })
+                    </th>
+                    <th scope="col">
+                        @Html.ActionLink("Start date", "LeaveRequests", new { sortBy = "StartDate" }, new { @class = "sort-link" })
+                    </th>
+                    <th scope="col">
+                        @Html.ActionLink("End date", "LeaveRequests", new { sortBy = "EndDate" }, new { @class = "sort-link" })
+                    </th>
+                    <th scope="col">
+                        @Html.ActionLink("Status", "LeaveRequests", new { sortBy = "Status" }, new { @class = "sort-link" })
+                    </th>
+                    @if (User.IsInRole("HRManager") || User.IsInRole("ProjectManager"))
+                    {
+                        <th scope="col">
+
+                        </th>
+                    }
+                    @if (!User.IsInRole("HRManager") && !User.IsInRole("ProjectManager"))
+                    {
+                        <th scope="col">
+
+                        </th>
+                        <th scope="col">
+
+                        </th>
+                    }
+                   
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var request in Model)
+                {
+                    <tr>
+                        <th scope="row">@request.Id</th>
+                        <td>@request.Employee.FullName</td>
+                        <td>@request.AbsenceReason.ToString()</td>
+                        <td>@request.StartDate.ToString("yyyy-MM-dd")</td>
+                        <td>@request.EndDate.ToString("yyyy-MM-dd")</td>
+                        <td>@request.Status.ToString()</td>
+                        @if (User.IsInRole("HRManager") || User.IsInRole("ProjectManager"))
+                        {
+                            <td>
+                                <a class="btn btn-primary" asp-controller="Lists" asp-action="LeaveRequestDetails" asp-route-id="@request.Id">Details</a>
+                            </td>
+                        }
+                        @if (!User.IsInRole("HRManager") && !User.IsInRole("ProjectManager"))
+                        {
+                            <td>
+                                <a class="btn btn-primary" asp-controller="Lists" asp-action="AddEditLeaveRequest" asp-route-id="@request.Id">Edit</a>
+                            </td>
+                            @if (request.Status == Status.Deactivated)
+                            {
+                                <td>
+                                    <form method="post" enctype="multipart/form-data">
+                                        <button type="submit" class="btn btn-success" asp-controller="Lists" asp-action="LeaveRequests" asp-route-id="@request.Id" asp-route-action="submit">Submitt</button>
+                                    </form>
+                                </td>
+                            }
+                            else
+                            {
+                                <td>
+                                    <form method="post" enctype="multipart/form-data">
+                                        <button type="submit" class="btn btn-danger" asp-controller="Lists" asp-action="LeaveRequests" asp-route-id="@request.Id" asp-route-action="cancel">Cancel</button>
+                                    </form>
+                                </td>
+                            }
+                        }
+
+                       
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>
